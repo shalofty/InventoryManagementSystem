@@ -18,28 +18,28 @@
       </Label>
       <Pane layoutX="539.0" layoutY="50.0" prefHeight="257.0" prefWidth="375.0" style="-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;">
          <children>
-            <TableView layoutX="13.0" layoutY="44.0" prefHeight="192.0" prefWidth="350.0">
+            <TableView fx:id="viewParts" layoutX="13.0" layoutY="44.0" onMouseClicked="#enableAddButton" prefHeight="192.0" prefWidth="350.0">
               <columns>
-                <TableColumn prefWidth="56.0" text="Part ID" />
-                <TableColumn prefWidth="127.0" text="Part Name" />
-                  <TableColumn prefWidth="100.0" text="Inventory Level" />
-                  <TableColumn prefWidth="66.0" text="Price" />
+                <TableColumn fx:id="partIDColumn" prefWidth="56.0" text="Part ID" />
+                <TableColumn fx:id="partNameColumn" prefWidth="127.0" text="Part Name" />
+                  <TableColumn fx:id="partInvColumn" prefWidth="100.0" text="Inventory Level" />
+                  <TableColumn fx:id="partPriceColumn" prefWidth="66.0" text="Price" />
               </columns>
             </TableView>
-            <TextField layoutX="205.0" layoutY="14.0" prefHeight="25.0" prefWidth="158.0" promptText="Search by Part ID or Name" />
+            <TextField fx:id="partSearchBox" layoutX="205.0" layoutY="14.0" onAction="#partSearch" prefHeight="25.0" prefWidth="158.0" promptText="Search by Part ID or Name" />
          </children>
       </Pane>
       <Pane layoutX="539.0" layoutY="357.0" prefHeight="271.0" prefWidth="375.0" style="-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;">
          <children>
-            <TableView layoutX="13.0" layoutY="44.0" prefHeight="192.0" prefWidth="350.0">
+            <TableView fx:id="viewProductParts" layoutX="13.0" layoutY="44.0" onMouseClicked="#enableRemoveButton" prefHeight="192.0" prefWidth="350.0">
                <columns>
-                  <TableColumn prefWidth="72.0" text="Product ID" />
-                  <TableColumn prefWidth="111.0" text="Product Name" />
-                  <TableColumn prefWidth="100.0" text="Inventory Level" />
-                  <TableColumn prefWidth="66.0" text="Price" />
+                  <TableColumn fx:id="proPartIDColumn" prefWidth="72.0" text="Product ID" />
+                  <TableColumn fx:id="proPartNameColumn" prefWidth="111.0" text="Product Name" />
+                  <TableColumn fx:id="proPartInvColumn" prefWidth="100.0" text="Inventory Level" />
+                  <TableColumn fx:id="proPartPriceColumn" prefWidth="66.0" text="Price" />
                </columns>
             </TableView>
-            <TextField layoutX="185.0" layoutY="14.0" prefHeight="25.0" prefWidth="178.0" promptText="Search by Product ID or Name" />
+            <TextField fx:id="associatedPartSearchBox" layoutX="185.0" layoutY="14.0" onAction="#associatedPartSearch" prefHeight="25.0" prefWidth="178.0" promptText="Search by Product ID or Name" />
          </children>
       </Pane>
       <Button fx:id="backButton" layoutX="861.0" layoutY="670.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="53.0" text="Back" />
@@ -54,14 +54,14 @@
       <Label layoutX="38.0" layoutY="224.0" text="Price" />
       <Label layoutX="38.0" layoutY="261.0" text="Max" />
       <Label layoutX="176.0" layoutY="261.0" text="Min" />
-      <TextField layoutX="77.0" layoutY="104.0" />
-      <TextField layoutX="77.0" layoutY="143.0" />
-      <TextField layoutX="77.0" layoutY="182.0" prefHeight="25.0" prefWidth="89.0" />
-      <TextField layoutX="77.0" layoutY="220.0" prefHeight="25.0" prefWidth="89.0" />
-      <TextField layoutX="77.0" layoutY="257.0" prefHeight="25.0" prefWidth="89.0" />
-      <TextField layoutX="204.0" layoutY="257.0" prefHeight="25.0" prefWidth="89.0" />
-      <Button layoutX="813.0" layoutY="670.0" mnemonicParsing="false" text="Save" />
-      <Button layoutX="862.0" layoutY="637.0" mnemonicParsing="false" text="Delete" />
-      <Button layoutX="866.0" layoutY="315.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="44.0" text="Add" />
+      <TextField fx:id="idField" disable="true" editable="false" layoutX="77.0" layoutY="104.0" promptText="Auto-Generated ID" />
+      <TextField fx:id="nameField" layoutX="77.0" layoutY="143.0" />
+      <TextField fx:id="invField" layoutX="77.0" layoutY="182.0" prefHeight="25.0" prefWidth="89.0" />
+      <TextField fx:id="priceField" layoutX="77.0" layoutY="220.0" prefHeight="25.0" prefWidth="89.0" />
+      <TextField fx:id="maxField" layoutX="77.0" layoutY="257.0" prefHeight="25.0" prefWidth="89.0" />
+      <TextField fx:id="minField" layoutX="204.0" layoutY="257.0" prefHeight="25.0" prefWidth="89.0" />
+      <Button fx:id="saveButton" layoutX="813.0" layoutY="670.0" mnemonicParsing="false" onAction="#commitProduct" text="Save" />
+      <Button fx:id="delButton" disable="true" layoutX="781.0" layoutY="636.0" mnemonicParsing="false" onAction="#partDel" text="Remove from Product" />
+      <Button fx:id="addButton" disable="true" layoutX="810.0" layoutY="315.0" mnemonicParsing="false" onAction="#partAdd" prefHeight="25.0" prefWidth="100.0" text="Add to Product" />
    </children>
 </AnchorPane>

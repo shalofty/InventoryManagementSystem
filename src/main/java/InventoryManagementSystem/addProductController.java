@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 public class addProductController implements Initializable {
 
     @FXML public Button backButton, saveButton, addPartButton, delPartButton;
-    @FXML public TextField idField, nameField, invField, priceField, maxField, minField;
+    @FXML public TextField idField, nameField, invField, priceField, maxField, minField, partSearchBox, associatedPartSearchBox;
     @FXML public TableColumn<Part, Integer> partIDColumn, partInvColumn, proPartIDColumn, proPartInvColumn;
     @FXML public TableColumn<Part, String> partNameColumn, proPartNameColumn;
     @FXML public TableColumn<Part, Double> partPriceColumn, proPartPriceColumn;
@@ -37,7 +37,6 @@ public class addProductController implements Initializable {
     private static Stage stage;
     private static Scene scene;
     private static Parent root;
-
 
     /**
      * enable buttons function for addPart button
@@ -95,6 +94,28 @@ public class addProductController implements Initializable {
             this.associatedParts.remove(selectedPart);
             this.updateParts();
             this.updateProductParts();
+        }
+    }
+
+    public void partSearch(ActionEvent event) {
+        String query = partSearchBox.getText();
+        ObservableList<Part> dittoParts = Inventory.lookupPart(query);
+        if(dittoParts.isEmpty()) {
+            viewParts.setItems(null);
+        }
+        else {
+            viewParts.setItems(dittoParts);
+        }
+    }
+
+    public void associatedPartSearch(ActionEvent event) {
+        String query = associatedPartSearchBox.getText();
+        ObservableList<Part> dittoParts = Inventory.lookupPart(query);
+        if(dittoParts.isEmpty()) {
+            viewProductParts.setItems(null);
+        }
+        else {
+            viewProductParts.setItems(dittoParts);
         }
     }
 
@@ -173,7 +194,7 @@ public class addProductController implements Initializable {
     }
 
     /**
-     * imposibleRange function checks if min/max values are possible
+     * impossibleRange function checks if min/max values are possible
      * returns boolean values for use in other functions
      * */
     public boolean impossibleRange() {

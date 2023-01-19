@@ -42,7 +42,7 @@
                   <TableColumn fx:id="propriceColumn" prefWidth="66.0" text="Price" />
                </columns>
             </TableView>
-            <TextField fx:id="productSearch" layoutX="185.0" layoutY="14.0" prefHeight="25.0" prefWidth="178.0" promptText="Search by Product ID or Name" />
+            <TextField fx:id="productSearch" layoutX="185.0" layoutY="14.0" onAction="#productSearchBox" prefHeight="25.0" prefWidth="178.0" promptText="Search by Product ID or Name" />
             <Button fx:id="prodelButton" disable="true" layoutX="310.0" layoutY="240.0" mnemonicParsing="false" onAction="#proDel" text="Delete" />
             <Button fx:id="promodButton" disable="true" layoutX="250.0" layoutY="240.0" mnemonicParsing="false" onAction="#proMod" text="Modify" />
             <Button fx:id="proaddButton" layoutX="205.0" layoutY="240.0" mnemonicParsing="false" onAction="#proAdd" text="Add" />

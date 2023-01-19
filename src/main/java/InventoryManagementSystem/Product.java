@@ -116,20 +116,18 @@ public class Product {
         return max;
     }
 
-    // mod functions
-    // addAssociatedPart INCOMPLETE
-    public void addAssociatedPart(Part part) {}
-
-    // deleteAssociated INCOMPLETE
-    public boolean deleteAssociatedPart(Part selectedAssociatedPart) {
-        return false;
+    public void addAssociatedPart(Part part) {
+        associatedParts.add(part);
     }
 
-    // getAllAssociated INCOMPLETE
+    public boolean deleteAssociatedPart(Part selectedAssociatedPart) {
+        return this.associatedParts.remove(selectedAssociatedPart);
+    }
+
     /**
     * @return list of parts
     * */
     public ObservableList<Part> getAllAssociated() {
-        return null;
+        return associatedParts;
     }
 }

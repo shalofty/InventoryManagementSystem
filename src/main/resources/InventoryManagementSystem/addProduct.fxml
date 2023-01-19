@@ -26,7 +26,7 @@
                   <TableColumn fx:id="partPriceColumn" prefWidth="66.0" text="Price" />
               </columns>
             </TableView>
-            <TextField layoutX="205.0" layoutY="14.0" prefHeight="25.0" prefWidth="158.0" promptText="Search by Part ID or Name" />
+            <TextField fx:id="partSearchBox" layoutX="205.0" layoutY="14.0" onAction="#partSearch" prefHeight="25.0" prefWidth="158.0" promptText="Search by Part ID or Name" />
          </children>
       </Pane>
       <Pane layoutX="539.0" layoutY="391.0" prefHeight="254.0" prefWidth="375.0" style="-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;">
@@ -39,7 +39,7 @@
                   <TableColumn fx:id="proPartPriceColumn" prefWidth="66.0" text="Price" />
                </columns>
             </TableView>
-            <TextField layoutX="185.0" layoutY="14.0" prefHeight="25.0" prefWidth="178.0" promptText="Search by Product ID or Name" />
+            <TextField fx:id="associatedPartSearchBox" layoutX="185.0" layoutY="14.0" onAction="#associatedPartSearch" prefHeight="25.0" prefWidth="178.0" promptText="Search by Product ID or Name" />
          </children>
       </Pane>
       <Button fx:id="backButton" layoutX="861.0" layoutY="709.0" mnemonicParsing="false" onAction="#goBack" prefHeight="25.0" prefWidth="53.0" text="Back" />

@@ -63,7 +63,6 @@ public class MainController implements Initializable {
         modPartController mpc = loader.getController();
         mpc.partAttributes(viewParts.getSelectionModel().getSelectedItem());
 
-
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Parent scene = loader.getRoot();
         stage.setScene(new Scene(scene));
@@ -127,6 +126,17 @@ public class MainController implements Initializable {
         }
     }
 
+    public void productSearchBox(ActionEvent event) {
+        String query = productSearch.getText();
+        ObservableList<Product> dittoProducts = Inventory.lookupProduct(query);
+        if(dittoProducts.isEmpty()) {
+            viewProducts.setItems(null);
+        }
+        else {
+            viewProducts.setItems(dittoProducts);
+        }
+    }
+
     /**
      * proAdd function stages addProduct.fxml scene
      * */
@@ -142,9 +152,17 @@ public class MainController implements Initializable {
      * proMod function stages modProduct.fxml scene
      * */
     public void proMod(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("modProduct.fxml"));
+        Product selectedProduct = viewProducts.getSelectionModel().getSelectedItem();
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("modProduct.fxml"));
+        loader.load();
+
+        modProductController controller = loader.getController();
+        controller.productAttributes(selectedProduct);
+
+
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
+        scene = new Scene(loader.getRoot());
         stage.setScene(scene);
         stage.show();
     }
