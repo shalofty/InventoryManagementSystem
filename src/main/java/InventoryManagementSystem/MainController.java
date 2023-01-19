@@ -125,7 +125,10 @@ public class MainController implements Initializable {
             viewParts.setItems(dittoParts);
         }
     }
-
+    /**
+     * prductSearchBox function
+     * @param event triggers when user searches in search bar
+     * */
     public void productSearchBox(ActionEvent event) {
         String query = productSearch.getText();
         ObservableList<Product> dittoProducts = Inventory.lookupProduct(query);
@@ -139,6 +142,7 @@ public class MainController implements Initializable {
 
     /**
      * proAdd function stages addProduct.fxml scene
+     * @param event triggers when user clicks the add product button
      * */
     public void proAdd(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("addProduct.fxml"));
@@ -150,6 +154,7 @@ public class MainController implements Initializable {
 
     /**
      * proMod function stages modProduct.fxml scene
+     * @param event triggers when user clicks the mod product button
      * */
     public void proMod(ActionEvent event) throws IOException {
         Product selectedProduct = viewProducts.getSelectionModel().getSelectedItem();
@@ -169,6 +174,7 @@ public class MainController implements Initializable {
 
     /**
      * proDel function to delete products from inventory
+     * @param event triggers when user clicks the delete product button
      * */
     public void proDel(ActionEvent event) throws IOException {
         Product selectedProduct = viewProducts.getSelectionModel().getSelectedItem();

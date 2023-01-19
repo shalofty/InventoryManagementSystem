@@ -64,6 +64,10 @@ public class addProductController implements Initializable {
         return num.nextInt((max - min) + 1) + min;
     }
 
+    /**
+     * addPart function adds a part to the associated parts table
+     * @param event triggers when user clicks the add part button
+     * */
     @FXML void partAdd(ActionEvent event) {
         // apply selection to variable
         Part selectedPart = this.viewParts.getSelectionModel().getSelectedItem();
@@ -81,6 +85,10 @@ public class addProductController implements Initializable {
         }
     }
 
+    /**
+     * delPart function removes a part from the associated parts table
+     * @param event triggers when user clicks the delete part button
+     * */
     @FXML void partDel(ActionEvent event) {
         Part selectedPart = viewProductParts.getSelectionModel().getSelectedItem();
         if (selectedPart == null) {
@@ -97,6 +105,10 @@ public class addProductController implements Initializable {
         }
     }
 
+    /**
+     * partSearch function searches for a part in the parts table
+     * @param event triggers when user uses search bar
+     * */
     public void partSearch(ActionEvent event) {
         String query = partSearchBox.getText();
         ObservableList<Part> dittoParts = Inventory.lookupPart(query);
@@ -108,6 +120,10 @@ public class addProductController implements Initializable {
         }
     }
 
+    /**
+     * associatedPartSearch function searches for a part in the associated parts table
+     * @param event triggers when user uses search bar
+     * */
     public void associatedPartSearch(ActionEvent event) {
         String query = associatedPartSearchBox.getText();
         ObservableList<Part> dittoParts = Inventory.lookupPart(query);
@@ -119,6 +135,10 @@ public class addProductController implements Initializable {
         }
     }
 
+    /**
+     * commitProduct functions commits the product to the inventory
+     * @param event triggers when user clicks the save button
+     * */
     @FXML void commitProduct(ActionEvent event) throws IOException {
 
         if (this.associatedParts.isEmpty()) {
@@ -210,6 +230,10 @@ public class addProductController implements Initializable {
         }
     }
 
+    /**
+     * rangeBreach function checks if inventory is within min/max range
+     * returns boolean values for use in other functions
+     * */
     public boolean rangeBreach() {
         int stock = Integer.parseInt(this.invField.getText());
         int max = Integer.parseInt(this.maxField.getText());
@@ -223,6 +247,10 @@ public class addProductController implements Initializable {
         }
     }
 
+    /**
+     * goBack function cancels the product creation, returns to previous menu
+     * @param event triggers when user clicks the cancel button
+     * */
     public void goBack(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();

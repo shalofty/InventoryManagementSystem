@@ -106,6 +106,10 @@ public class modProductController implements Initializable {
         }
     }
 
+    /**
+     * partSeach function searches for a part in viewParts
+     * @param event triggered by partSearchBox
+     */
     public void partSearch(ActionEvent event) {
         String query = partSearchBox.getText();
         ObservableList<Part> dittoParts = Inventory.lookupPart(query);
@@ -117,6 +121,10 @@ public class modProductController implements Initializable {
         }
     }
 
+    /**
+     * associatedPartSearch function searches for associated parts
+     * @param event triggered by associatedPartSearchBox
+     */
     public void associatedPartSearch(ActionEvent event) {
         String query = associatedPartSearchBox.getText();
         ObservableList<Part> dittoParts = Inventory.lookupPart(query);
@@ -172,11 +180,13 @@ public class modProductController implements Initializable {
 
         if (!this.associatedParts.isEmpty() && !emptyFields() && !impossibleRange() && !rangeBreach()) {
             // if all conditions are met, save the product
+            int id = this.selectedProduct.getID();
             String name = this.nameField.getText();
             int stock = Integer.parseInt(this.invField.getText());
             int min = Integer.parseInt(this.minField.getText());
             int max = Integer.parseInt(this.maxField.getText());
             double price = Double.parseDouble(this.priceField.getText());
+            selectedProduct.setID(id);
             selectedProduct.setName(name);
             selectedProduct.setStock(stock);
             selectedProduct.setMin(min);
