@@ -1,3 +1,19 @@
+/**
+ * E.  Add the listed functionalities to the following parts forms:
+ *
+ * 1.  The Add Part form
+ * • The In-House and Outsourced radio buttons switch the bottom label to the correct value (Machine ID or Company Name). ✔
+ * •   The application auto-generates a unique part ID. The part IDs can be, but do not need to be, contiguous. ✔
+ *
+ * -   The part ID text field must be disabled. ✔
+ *
+ * •   The user should be able to enter a part name, inventory level or stock, a price, maximum and minimum values, and company name or machine ID values into active text fields. ✔
+ *
+ * •   After saving the data, users are automatically redirected to the Main form. ✔
+ *
+ * •   Canceling or exiting this form redirects users to the Main form. ✔
+ * */
+
 package InventoryManagementSystem;
 
 import InventoryManagementSystem.InHouse;

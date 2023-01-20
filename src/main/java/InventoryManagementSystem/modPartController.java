@@ -1,3 +1,13 @@
+/**
+ * 2.  The Modify Part form
+ * • The text fields populate with the data from the chosen part. ✔
+ * • The In-House and Outsourced radio buttons switch the bottom label to the correct value (Machine ID or Company Name) and swap In-House parts and Outsourced parts. ✔
+ *   When new objects need to be created after the Save button is clicked, the part ID should be retained. XXX
+ * • The user can modify data values in the text fields sent from the Main form except the part ID. ✔
+ * • After saving modifications to the part, the user is automatically redirected to the Main form. ✔
+ * • Canceling or exiting this form redirects users to the Main form. ✔
+ * */
+
 package InventoryManagementSystem;
 
 import InventoryManagementSystem.addPartController;
