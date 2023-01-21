@@ -43,13 +43,12 @@ public class Inventory {
      * there are 4 total lookupStuff functions
      * 2 functions use an int ID parameter
      * 2 functions use String name parameter
-     * I did not deviate from the naming scheme in the UML class diagram
      * */
 
     /**
      * lookupPart function via partID
      * */
-    public static Part lookupPart(int partID) {
+    public static Part lookupPartbyID(int partID) {
         // Pokemon number 132 is Ditto, it can freely recombine its own structure to transform to other forms.
         Part ditto = null;
         for (Part part : allParts) {
@@ -63,7 +62,7 @@ public class Inventory {
     /**
      * lookupProduct function via productID
      * */
-    public static Product lookupProduct(int productID) {
+    public static Product lookupProductbyID(int productID) {
         Product ditto = null;
         for (Product product : allProducts) {
             if (productID == product.getID()) {

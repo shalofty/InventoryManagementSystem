@@ -170,17 +170,38 @@ public class MainController implements Initializable {
      * partSeachBox function
      * uses the lookupPart function defined in the Inventory class
      * @param event triggers when user searches in search bar
+     * FUTURE IMPROVEMENT: could be cleaner by returning a more relevant datatype from the lookupPart function in the Inventory class or creating a new function altogether
      * */
-    public void partSearchBox(ActionEvent event) {
-        String query = partSearch.getText();
-        ObservableList<Part> dittoParts = Inventory.lookupPart(query);
-        if(dittoParts.isEmpty()) {
-            viewParts.setItems(null);
+    public void partSearchBox(ActionEvent event) throws IOException {
+        String query = partSearch.getText(); // input from text field
+        ObservableList<Part> queryNameList = Inventory.lookupPart(query); // list of parts that match the query
+        if (queryNameList.size() > 0) {
+            viewParts.setItems(queryNameList);
+        } else {
+            try {
+                int partID = Integer.parseInt(query); // converts the query to an int, for use if query happens to be int
+                Part part = Inventory.lookupPartbyID(partID); // looking up part by ID using int PartID
+                String nameByID = part.getName(); // getting the name of the part by ID because Inventory.lookupPartbyID returns a part object
+                ObservableList<Part> queryIDList = Inventory.lookupPart(nameByID); // list of parts that match the query by ID to use for a table view
+                if (queryIDList.isEmpty()) {
+                    viewParts.setItems(queryNameList);
+                }
+                else {
+                    viewParts.setItems(queryIDList);
+                    viewParts.getSelectionModel().select(part);
+                }
+            } catch (Exception e) {
+                viewParts.setItems(null);
+                Alert notFound = new Alert(Alert.AlertType.ERROR);
+                notFound.setTitle("Error");
+                notFound.setHeaderText("Part not found");
+                notFound.setContentText("Please try again");
+                notFound.showAndWait();
+            }
         }
-        else {
-            viewParts.setItems(dittoParts);
         }
-    }
+
+
     /**
      * prductSearchBox function
      * @param event triggers when user searches in search bar
