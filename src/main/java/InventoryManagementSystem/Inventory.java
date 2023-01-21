@@ -78,9 +78,9 @@ public class Inventory {
     public static ObservableList<Part> lookupPart(String partName) {
         ObservableList<Part> dittoPart = FXCollections.observableArrayList();
         if (partName.length() > 0) {
-            for (Part allPart : allParts) {
-                if (allPart.getName().toUpperCase().contains(partName.toUpperCase())) {
-                    dittoPart.add(allPart);
+            for (Part thePart : allParts) {
+                if (thePart.getName().toUpperCase().contains(partName.toUpperCase())) {
+                    dittoPart.add(thePart);
                 }
             }
         }
@@ -93,12 +93,11 @@ public class Inventory {
      * */
     public static ObservableList<Product> lookupProduct(String productName) {
         ObservableList<Product> dittoProduct = FXCollections.observableArrayList();
-        if (productName.length() != 0) {
-            int pokeball = 0;
-            while (pokeball < allProducts.size()) {
-                if (allProducts.get(pokeball).getName().toUpperCase().contains(productName.toUpperCase())) {
-                    dittoProduct.add(allProducts.get(pokeball));
-                } else {pokeball++;}
+        if (productName.length() > 0) {
+            for (Product theProduct : allProducts) {
+                if (theProduct.getName().toUpperCase().contains(productName.toUpperCase())) {
+                    dittoProduct.add(theProduct);
+                }
             }
         }
         else {dittoProduct = allProducts;}

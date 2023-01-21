@@ -70,6 +70,7 @@ public class modPartController implements Initializable {
 
         this.selectedPart = selectedPart;
 
+        partidField.setText(Integer.toString(selectedPart.getId()));
         partidField.setText(Integer.toString(this.selectedPart.getId()));
         partnameField.setText(this.selectedPart.getName());
         partinvField.setText(Integer.toString(this.selectedPart.getStock()));
@@ -110,8 +111,11 @@ public class modPartController implements Initializable {
      * Generates a new partID, and deletes the old entry from the table
      * */
     @FXML public void savePart(ActionEvent event) throws IOException {
+        // part index
+        int index = Inventory.getAllParts().indexOf(selectedPart);
+
         // generating part ID using generatedID function
-        int partID = addPartController.randID(0, 100000);
+        int partID = selectedPart.getId();
 
         // use getText() for other fields
         String partName = partnameField.getText();
@@ -124,11 +128,11 @@ public class modPartController implements Initializable {
         if (ihRadio.isSelected()) {
             int machineID = Integer.parseInt(radioresultField.getText());
             InHouse part = new InHouse(partID, partName, partPrice, partInv, partMin, partMax, machineID);
-            Inventory.addPart(part);
+            Inventory.updatePart(index, part);
         } else {
             String companyName = radioresultField.getText();
             Outsourced part = new Outsourced(partID, partName, partPrice, partInv, partMin, partMax, companyName);
-            Inventory.addPart(part);
+            Inventory.updatePart(index, part);
         }
 
         // returning to mainMenu
@@ -137,9 +141,6 @@ public class modPartController implements Initializable {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-
-        // deleting the old entry
-        this.partDel(selectedPart);
     }
 
     /**

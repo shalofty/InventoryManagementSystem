@@ -79,7 +79,7 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable {
 
     @FXML public Button mainexitButton, partaddButton, partmodButton, partdelButton, proaddButton, promodButton, prodelButton;
-    @FXML public TextField partSearch, productSearch;
+    @FXML public TextField partSearchBox, productSearchBox;
     @FXML public TableColumn<Part, Integer> partidColumn, partinvColumn;
     @FXML public TableColumn<Product, Integer> proidColumn, proinvColumn;
     @FXML public TableColumn<Part, String> partnameColumn;
@@ -171,13 +171,15 @@ public class MainController implements Initializable {
      * uses the lookupPart function defined in the Inventory class
      * @param event triggers when user searches in search bar
      * FUTURE IMPROVEMENT: could be cleaner by returning a more relevant datatype from the lookupPart function in the Inventory class or creating a new function altogether
+     * This was the first build of the function, and I used it for the others, so they don't have inline comments
      * */
-    public void partSearchBox(ActionEvent event) throws IOException {
-        String query = partSearch.getText(); // input from text field
+    public void partSearch(ActionEvent event) throws IOException {
+        String query = partSearchBox.getText(); // input from text field
         ObservableList<Part> queryNameList = Inventory.lookupPart(query); // list of parts that match the query
         if (queryNameList.size() > 0) {
             viewParts.setItems(queryNameList);
-        } else {
+        }
+        else {
             try {
                 int partID = Integer.parseInt(query); // converts the query to an int, for use if query happens to be int
                 Part part = Inventory.lookupPartbyID(partID); // looking up part by ID using int PartID
@@ -190,15 +192,16 @@ public class MainController implements Initializable {
                     viewParts.setItems(queryIDList);
                     viewParts.getSelectionModel().select(part);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 viewParts.setItems(null);
                 Alert notFound = new Alert(Alert.AlertType.ERROR);
                 notFound.setTitle("Error");
                 notFound.setHeaderText("Part not found");
                 notFound.setContentText("Please try again");
                 notFound.showAndWait();
+                }
             }
-        }
         }
 
 
@@ -206,14 +209,34 @@ public class MainController implements Initializable {
      * prductSearchBox function
      * @param event triggers when user searches in search bar
      * */
-    public void productSearchBox(ActionEvent event) {
-        String query = productSearch.getText();
-        ObservableList<Product> dittoProducts = Inventory.lookupProduct(query);
-        if(dittoProducts.isEmpty()) {
-            viewProducts.setItems(null);
+    public void productSearch(ActionEvent event) throws IOException {
+        String query = productSearchBox.getText();
+        ObservableList<Product> queryNameList = Inventory.lookupProduct(query);
+        if (queryNameList.size() > 0) {
+            viewProducts.setItems(queryNameList);
         }
         else {
-            viewProducts.setItems(dittoProducts);
+            try {
+                int productID = Integer.parseInt(query);
+                Product product = Inventory.lookupProductbyID(productID);
+                String nameByID = product.getName();
+                ObservableList<Product> queryIDList = Inventory.lookupProduct(nameByID);
+                if (queryIDList.isEmpty()) {
+                    viewProducts.setItems(queryNameList);
+                }
+                else {
+                    viewProducts.setItems(queryIDList);
+                    viewProducts.getSelectionModel().select(product);
+                }
+            }
+            catch (Exception e) {
+                viewProducts.setItems(null);
+                Alert notFound = new Alert(Alert.AlertType.ERROR);
+                notFound.setTitle("Error");
+                notFound.setHeaderText("Part not found");
+                notFound.setContentText("Please try again");
+                notFound.showAndWait();
+            }
         }
     }
 

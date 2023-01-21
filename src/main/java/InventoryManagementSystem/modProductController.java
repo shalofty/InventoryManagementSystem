@@ -130,6 +130,7 @@ public class modProductController implements Initializable {
         }
         else {
             this.associatedParts.remove(selectedPart);
+            this.selectedProduct.deleteAssociatedPart(selectedPart);
             this.updateParts();
             this.updateProductParts();
         }
@@ -174,16 +175,16 @@ public class modProductController implements Initializable {
      * @param event triggers when user uses search bar
      * */
     public void associatedPartSearch(ActionEvent event) throws IOException {
-        String query = associatedPartSearchBox.getText(); // input from text field
-        ObservableList<Part> queryNameList = Inventory.lookupPart(query); // list of parts that match the query
+        String query = associatedPartSearchBox.getText();
+        ObservableList<Part> queryNameList = Inventory.lookupPart(query);
         if (queryNameList.size() > 0) {
             viewProductParts.setItems(queryNameList);
         } else {
             try {
-                int partID = Integer.parseInt(query); // converts the query to an int, for use if query happens to be int
-                Part part = Inventory.lookupPartbyID(partID); // looking up part by ID using int PartID
-                String nameByID = part.getName(); // getting the name of the part by ID because Inventory.lookupPartbyID returns a part object
-                ObservableList<Part> queryIDList = Inventory.lookupPart(nameByID); // list of parts that match the query by ID to use for a table view
+                int partID = Integer.parseInt(query);
+                Part part = Inventory.lookupPartbyID(partID);
+                String nameByID = part.getName();
+                ObservableList<Part> queryIDList = Inventory.lookupPart(nameByID);
                 if (queryIDList.isEmpty()) {
                     viewProductParts.setItems(queryNameList);
                 }
@@ -246,6 +247,9 @@ public class modProductController implements Initializable {
         }
 
         if (!this.associatedParts.isEmpty() && !emptyFields() && !impossibleRange() && !rangeBreach()) {
+            // product index
+            int index = Inventory.getAllProducts().indexOf(this.selectedProduct);
+
             // if all conditions are met, save the product
             int id = this.selectedProduct.getID();
             String name = this.nameField.getText();
@@ -264,10 +268,13 @@ public class modProductController implements Initializable {
             for (Part part : associatedParts) {
                 if (selectedProduct.getAllAssociated().contains(part)) {
                     continue;
-                } else {
+                }
+                else {
                     selectedProduct.addAssociatedPart(part);
                 }
             }
+
+            Inventory.updateProduct(index, selectedProduct);
 
             // return to main menu
             Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));

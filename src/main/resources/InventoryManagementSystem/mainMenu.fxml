@@ -26,7 +26,7 @@
                   <TableColumn fx:id="partpriceColumn" prefWidth="66.0" text="Price" />
               </columns>
             </TableView>
-            <TextField fx:id="partSearch" layoutX="205.0" layoutY="14.0" onAction="#partSearchBox" prefHeight="25.0" prefWidth="158.0" promptText="Search by Part ID or Name" />
+            <TextField fx:id="partSearchBox" layoutX="205.0" layoutY="14.0" onAction="#partSearch" prefHeight="25.0" prefWidth="158.0" promptText="Search by Part ID or Name" />
             <Button fx:id="partdelButton" disable="true" layoutX="310.0" layoutY="240.0" mnemonicParsing="false" onAction="#partDel" text="Delete" />
             <Button fx:id="partmodButton" disable="true" layoutX="250.0" layoutY="240.0" mnemonicParsing="false" onAction="#partMod" text="Modify" />
             <Button fx:id="partaddButton" layoutX="205.0" layoutY="240.0" mnemonicParsing="false" onAction="#partAdd" text="Add" />
@@ -42,7 +42,7 @@
                   <TableColumn fx:id="propriceColumn" prefWidth="66.0" text="Price" />
                </columns>
             </TableView>
-            <TextField fx:id="productSearch" layoutX="185.0" layoutY="14.0" onAction="#productSearchBox" prefHeight="25.0" prefWidth="178.0" promptText="Search by Product ID or Name" />
+            <TextField fx:id="productSearchBox" layoutX="185.0" layoutY="14.0" onAction="#productSearch" prefHeight="25.0" prefWidth="178.0" promptText="Search by Product ID or Name" />
             <Button fx:id="prodelButton" disable="true" layoutX="310.0" layoutY="240.0" mnemonicParsing="false" onAction="#proDel" text="Delete" />
             <Button fx:id="promodButton" disable="true" layoutX="250.0" layoutY="240.0" mnemonicParsing="false" onAction="#proMod" text="Modify" />
             <Button fx:id="proaddButton" layoutX="205.0" layoutY="240.0" mnemonicParsing="false" onAction="#proAdd" text="Add" />

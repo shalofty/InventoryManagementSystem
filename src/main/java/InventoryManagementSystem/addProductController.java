@@ -63,6 +63,8 @@ public class addProductController implements Initializable {
     private final ObservableList<Part> associatedParts = FXCollections.observableArrayList();
     private final ObservableList<Part> originalParts = FXCollections.observableArrayList();
 
+    private Product selectedProduct;
+
     private static Stage stage;
     private static Scene scene;
     private static Parent root;
@@ -138,7 +140,7 @@ public class addProductController implements Initializable {
      * partSearch function searches for a part in the parts table
      * @param event triggers when user uses search bar
      * */
-    public void partSearch(ActionEvent event) throws IOException {
+    @FXML public void partSearch(ActionEvent event) throws IOException {
         String query = partSearchBox.getText(); // input from text field
         ObservableList<Part> queryNameList = Inventory.lookupPart(query); // list of parts that match the query
         if (queryNameList.size() > 0) {
@@ -172,7 +174,7 @@ public class addProductController implements Initializable {
      * associatedPartSearch function searches for a part in the associated parts table
      * @param event triggers when user uses search bar
      * */
-    public void associatedPartSearch(ActionEvent event) throws IOException {
+    @FXML public void associatedPartSearch(ActionEvent event) throws IOException {
         String query = associatedPartSearchBox.getText(); // input from text field
         ObservableList<Part> queryNameList = Inventory.lookupPart(query); // list of parts that match the query
         if (queryNameList.size() > 0) {
@@ -245,7 +247,6 @@ public class addProductController implements Initializable {
         }
 
         if (!this.associatedParts.isEmpty() && !emptyFields() && !impossibleRange() && !rangeBreach()) {
-
             // create new product instance, assign values from fields
             Product newProduct = new Product();
             newProduct.setID(addProductController.randID(0, 999999));
@@ -254,6 +255,16 @@ public class addProductController implements Initializable {
             newProduct.setMin(Integer.parseInt(this.minField.getText()));
             newProduct.setMax(Integer.parseInt(this.maxField.getText()));
             newProduct.setPrice(Double.parseDouble(this.priceField.getText()));
+
+            // add selected parts to associated parts
+            for (Part part : associatedParts) {
+                if (newProduct.getAllAssociated().contains(part)) {
+                    continue;
+                } else {
+                    newProduct.addAssociatedPart(part);
+                }
+            }
+
             Inventory.addProduct(newProduct);
 
             // return to main menu
@@ -330,11 +341,11 @@ public class addProductController implements Initializable {
      * updateParts & updateProductParts functions
      * used within initialize to keep table views up-to-date
      * */
-    public void updateParts() {
+    @FXML public void updateParts() {
         this.viewParts.setItems(Inventory.getAllParts());
     }
 
-    public void updateProductParts() {
+    @FXML public void updateProductParts() {
         this.viewProductParts.setItems(this.associatedParts);
     }
 
