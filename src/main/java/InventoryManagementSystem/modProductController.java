@@ -136,32 +136,69 @@ public class modProductController implements Initializable {
     }
 
     /**
-     * partSeach function searches for a part in viewParts
-     * @param event triggered by partSearchBox
-     */
-    public void partSearch(ActionEvent event) {
-        String query = partSearchBox.getText();
-        ObservableList<Part> dittoParts = Inventory.lookupPart(query);
-        if(dittoParts.isEmpty()) {
-            viewParts.setItems(null);
-        }
-        else {
-            viewParts.setItems(dittoParts);
+     * partSearch function searches for a part in the parts table
+     * @param event triggers when user uses search bar
+     * */
+    public void partSearch(ActionEvent event) throws IOException {
+        String query = partSearchBox.getText(); // input from text field
+        ObservableList<Part> queryNameList = Inventory.lookupPart(query); // list of parts that match the query
+        if (queryNameList.size() > 0) {
+            viewParts.setItems(queryNameList);
+        } else {
+            try {
+                int partID = Integer.parseInt(query); // converts the query to an int, for use if query happens to be int
+                Part part = Inventory.lookupPartbyID(partID); // looking up part by ID using int PartID
+                String nameByID = part.getName(); // getting the name of the part by ID because Inventory.lookupPartbyID returns a part object
+                ObservableList<Part> queryIDList = Inventory.lookupPart(nameByID); // list of parts that match the query by ID to use for a table view
+                if (queryIDList.isEmpty()) {
+                    viewParts.setItems(queryNameList);
+                }
+                else {
+                    viewParts.setItems(queryIDList);
+                    viewParts.getSelectionModel().select(part);
+                }
+            } catch (Exception e) {
+                viewParts.setItems(null);
+                Alert notFound = new Alert(Alert.AlertType.ERROR);
+                notFound.setTitle("Error");
+                notFound.setHeaderText("Part not found");
+                notFound.setContentText("Please try again");
+                notFound.showAndWait();
+            }
         }
     }
 
+
     /**
-     * associatedPartSearch function searches for associated parts
-     * @param event triggered by associatedPartSearchBox
-     */
-    public void associatedPartSearch(ActionEvent event) {
-        String query = associatedPartSearchBox.getText();
-        ObservableList<Part> dittoParts = Inventory.lookupPart(query);
-        if(dittoParts.isEmpty()) {
-            viewProductParts.setItems(null);
-        }
-        else {
-            viewProductParts.setItems(dittoParts);
+     * associatedPartSearch function searches for a part in the associated parts table
+     * @param event triggers when user uses search bar
+     * */
+    public void associatedPartSearch(ActionEvent event) throws IOException {
+        String query = associatedPartSearchBox.getText(); // input from text field
+        ObservableList<Part> queryNameList = Inventory.lookupPart(query); // list of parts that match the query
+        if (queryNameList.size() > 0) {
+            viewProductParts.setItems(queryNameList);
+        } else {
+            try {
+                int partID = Integer.parseInt(query); // converts the query to an int, for use if query happens to be int
+                Part part = Inventory.lookupPartbyID(partID); // looking up part by ID using int PartID
+                String nameByID = part.getName(); // getting the name of the part by ID because Inventory.lookupPartbyID returns a part object
+                ObservableList<Part> queryIDList = Inventory.lookupPart(nameByID); // list of parts that match the query by ID to use for a table view
+                if (queryIDList.isEmpty()) {
+                    viewProductParts.setItems(queryNameList);
+                }
+                else {
+                    viewProductParts.setItems(queryIDList);
+                    viewProductParts.getSelectionModel().select(part);
+                }
+            } catch (Exception e) {
+                viewProductParts.setItems(null);
+                Alert notFound = new Alert(Alert.AlertType.ERROR);
+                notFound.setTitle("Error");
+                notFound.setHeaderText("Part not found");
+                notFound.setContentText("Please try again");
+                notFound.showAndWait();
+            }
         }
     }
 
