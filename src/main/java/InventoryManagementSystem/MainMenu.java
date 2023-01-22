@@ -19,7 +19,7 @@ import java.io.IOException;
 
 public class MainMenu extends Application {
 
-    private static Stage mainstage, partstage, productstage;
+    private static Stage mainstage;
 
     @Override
     public void start(Stage mainstage) throws IOException {
