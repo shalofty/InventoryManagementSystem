@@ -7,7 +7,6 @@
  * A systems analyst created the solution statements outlined in the requirements section of this task based on the business requirements.
  * You will use these solution statements to develop your application.
  * */
-
 package InventoryManagementSystem;
 
 import javafx.application.Application;

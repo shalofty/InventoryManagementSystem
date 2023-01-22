@@ -242,79 +242,23 @@ public class modProductController implements Initializable {
      */
     @FXML void commitProduct(ActionEvent event) throws IOException {
         try {
-            if (this.associatedParts.isEmpty()) {
-                // no selected parts warning
-                Alert noPartsAlert = new Alert(Alert.AlertType.WARNING);
-                noPartsAlert.setTitle("Warning");
-                noPartsAlert.setHeaderText("Parts cannot be empty");
-                noPartsAlert.setContentText("Please select from the table");
-                noPartsAlert.showAndWait();
-            }
+            // product index
+            int index = Inventory.getAllProducts().indexOf(this.selectedProduct);
 
-            if (emptyFields()) {
-                // empty fields warning
-                Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
-                emptyFieldsAlert.setTitle("Warning");
-                emptyFieldsAlert.setHeaderText("One of more fields is empty");
-                emptyFieldsAlert.setContentText("All fields are required");
-                emptyFieldsAlert.showAndWait();
-            }
+            associatedParts.stream()
+                    .filter(part -> !selectedProduct.getAllAssociated().contains(part))
+                    .forEach(selectedProduct::addAssociatedPart);
 
-            if (impossibleRange()) {
-                // impossible min/max range warning
-                Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
-                emptyFieldsAlert.setTitle("Warning");
-                emptyFieldsAlert.setHeaderText("Range values are impossible");
-                emptyFieldsAlert.setContentText("Please update min/max values");
-                emptyFieldsAlert.showAndWait();
-            }
-
-            if (rangeBreach()) {
-                // range breach warning
-                Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
-                emptyFieldsAlert.setTitle("Warning");
-                emptyFieldsAlert.setHeaderText("Inventory has fallen outside of min/max range");
-                emptyFieldsAlert.setContentText("Please update values");
-                emptyFieldsAlert.showAndWait();
-            }
-
-            if (!this.associatedParts.isEmpty() && !emptyFields() && !impossibleRange() && !rangeBreach()) {
-                // product index
-                int index = Inventory.getAllProducts().indexOf(this.selectedProduct);
-
-                // if all conditions are met, save the product
-                int id = this.selectedProduct.getID();
-                String name = this.nameField.getText();
-                int stock = Integer.parseInt(this.invField.getText());
-                int min = Integer.parseInt(this.minField.getText());
-                int max = Integer.parseInt(this.maxField.getText());
-                double price = Double.parseDouble(this.priceField.getText());
-                selectedProduct.setID(id);
-                selectedProduct.setName(name);
-                selectedProduct.setStock(stock);
-                selectedProduct.setMin(min);
-                selectedProduct.setMax(max);
-                selectedProduct.setPrice(price);
-
-                // add selected parts to associated parts
-                for (Part part : associatedParts) {
-                    if (selectedProduct.getAllAssociated().contains(part)) {
-                        continue;
-                    }
-                    else {
-                        selectedProduct.addAssociatedPart(part);
-                    }
-                }
-
+            if (dataVerified()) {
                 Inventory.updateProduct(index, selectedProduct);
-
-                // return to main menu
-                Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
-                stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
             }
+
+            // return to main menu
+            Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
+            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         }
         catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -370,6 +314,44 @@ public class modProductController implements Initializable {
         }
         else {
             return false;
+        }
+    }
+
+    /**
+     * iterates through several functions to check if data is valid
+     * I created this to clean up the savePart function
+     * */
+    public boolean dataVerified() {
+        // checking fields and ranges
+        if (emptyFields()) {
+            // empty fields warning
+            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+            emptyFieldsAlert.setTitle("Warning");
+            emptyFieldsAlert.setHeaderText("One of more fields is empty");
+            emptyFieldsAlert.setContentText("All fields are required");
+            emptyFieldsAlert.showAndWait();
+            return false;
+        }
+        else if (impossibleRange()) {
+            // impossible min/max range warning
+            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+            emptyFieldsAlert.setTitle("Warning");
+            emptyFieldsAlert.setHeaderText("Range values are impossible");
+            emptyFieldsAlert.setContentText("Please update min/max values");
+            emptyFieldsAlert.showAndWait();
+            return false;
+        }
+        else if (rangeBreach()) {
+            // range breach warning
+            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+            emptyFieldsAlert.setTitle("Warning");
+            emptyFieldsAlert.setHeaderText("Inventory has fallen outside of min/max range");
+            emptyFieldsAlert.setContentText("Please update values");
+            emptyFieldsAlert.showAndWait();
+            return false;
+        }
+        else {
+            return true;
         }
     }
 

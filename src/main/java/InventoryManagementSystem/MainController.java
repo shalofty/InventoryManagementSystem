@@ -51,8 +51,6 @@
  *
  * •   If the search field is set to empty, the table should be repopulated with all available products. ✔
  * */
-
-
 package InventoryManagementSystem;
 
 import javafx.application.Platform;
@@ -71,10 +69,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
-
 import java.io.IOException;
 import java.util.ResourceBundle;
-
 
 public class MainController implements Initializable {
 
@@ -162,10 +158,18 @@ public class MainController implements Initializable {
      * */
     public void partDel(ActionEvent event) throws IOException {
         Part selectedPart = viewParts.getSelectionModel().getSelectedItem();
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this part?");
-        alert.showAndWait();
-        if (alert.getResult() == ButtonType.OK) {
-            Inventory.deletePart(selectedPart);
+        if (selectedPart != null) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this part?");
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.OK) {
+                Inventory.deletePart(selectedPart);
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("There is no part selected!");
+            alert.setContentText("The table is empty!");
+            alert.showAndWait();
         }
     }
 
@@ -207,7 +211,6 @@ public class MainController implements Initializable {
             }
         }
 
-
     /**
      * prductSearch function
      * @param event triggers when user searches in search bar
@@ -236,7 +239,7 @@ public class MainController implements Initializable {
                 viewProducts.setItems(null);
                 Alert notFound = new Alert(Alert.AlertType.ERROR);
                 notFound.setTitle("Error");
-                notFound.setHeaderText("Part not found");
+                notFound.setHeaderText("Product not found");
                 notFound.setContentText("Please try again");
                 notFound.showAndWait();
             }
@@ -279,22 +282,31 @@ public class MainController implements Initializable {
      * @param event triggers when user clicks the delete product button
      * */
     public void proDel(ActionEvent event) throws IOException {
-        Product selectedProduct = viewProducts.getSelectionModel().getSelectedItem();
-        if (selectedProduct.getAllAssociated().isEmpty()) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You are about to delete a product.");
-            alert.showAndWait();
-            if (alert.getResult() == ButtonType.OK) {
-                Inventory.deleteProduct(selectedProduct);
+        try {
+            Product selectedProduct = viewProducts.getSelectionModel().getSelectedItem();
+            if (selectedProduct != null && selectedProduct.getAllAssociated().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You are about to delete a product.");
+                alert.showAndWait();
+                if (alert.getResult() == ButtonType.OK) {
+                    Inventory.deleteProduct(selectedProduct);
+                }
+                else {
+                    alert.close();
+                }
             }
-            else {
-                alert.close();
+            else if (!selectedProduct.getAllAssociated().isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Product has associated parts");
+                alert.setContentText("Please remove all associated parts before deleting");
+                alert.showAndWait();
             }
         }
-        else {
+        catch (NullPointerException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("Product has associated parts");
-            alert.setContentText("Please remove all associated parts before deleting");
+            alert.setHeaderText("There is no product selected!");
+            alert.setContentText("The table is empty!");
             alert.showAndWait();
         }
     }

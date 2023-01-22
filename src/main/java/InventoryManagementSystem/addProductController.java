@@ -90,32 +90,18 @@ public class addProductController implements Initializable {
     /**
      * Generating a random ID
      * @param min and max are parameters for the randID function
+     * This code generate a random ID within a  specified range. It then enters a loop where it checks
+     * ID's of products in the product list to see if they match the number.
      **/
     public static int randID(int min, int max) {
-        int n = 0;
-        while (true) {
-            try {
-                Random num = new Random();
-                int nextNum = num.nextInt(min, max);
-                ObservableList<Product> productList = Inventory.getAllProducts();
-                for (Product product : productList) {
-                    if (product.getID() == nextNum) {
-                        num = new Random();
-                    }
-                    else {
-                        n++;
-                        return nextNum;
-                    }
-                }
-            }
-            catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("ID Generation Error");
-                alert.setContentText("There was an error generating the ID, please try again.");
-                alert.showAndWait();
-            }
+        Random num = new Random();
+        ObservableList<Product> productList = Inventory.getAllProducts();
+        int nextNum = num.nextInt(min, max);
+        int finalNum = nextNum;
+        while (productList.stream().anyMatch(product -> product.getID() == finalNum)) {
+            nextNum = num.nextInt(min, max);
         }
+        return nextNum;
     }
 
     /**
@@ -192,7 +178,6 @@ public class addProductController implements Initializable {
         }
     }
 
-
     /**
      * associatedPartSearch function searches for a part in the associated parts table
      * @param event triggers when user uses search bar
@@ -266,51 +251,19 @@ public class addProductController implements Initializable {
                 noPartsAlert.showAndWait();
             }
 
-            if (emptyFields()) {
-                // empty fields warning
-                Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
-                emptyFieldsAlert.setTitle("Warning");
-                emptyFieldsAlert.setHeaderText("One of more fields is empty");
-                emptyFieldsAlert.setContentText("All fields are required");
-                emptyFieldsAlert.showAndWait();
-            }
-
-            if (impossibleRange()) {
-                // impossible min/max range warning
-                Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
-                emptyFieldsAlert.setTitle("Warning");
-                emptyFieldsAlert.setHeaderText("Range values are impossible");
-                emptyFieldsAlert.setContentText("Please update min/max values");
-                emptyFieldsAlert.showAndWait();
-            }
-
-            if (rangeBreach()) {
-                // range breach warning
-                Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
-                emptyFieldsAlert.setTitle("Warning");
-                emptyFieldsAlert.setHeaderText("Inventory has fallen outside of min/max range");
-                emptyFieldsAlert.setContentText("Please update values");
-                emptyFieldsAlert.showAndWait();
-            }
-
-            if (!this.associatedParts.isEmpty() && !emptyFields() && !impossibleRange() && !rangeBreach()) {
+            if (!this.associatedParts.isEmpty() && dataVerified()) {
                 // create new product instance, assign values from fields
                 Product newProduct = new Product();
-                newProduct.setID(addProductController.randID(0, 999999));
+                newProduct.setID(addProductController.randID(0, 9999));
                 newProduct.setName(this.nameField.getText());
                 newProduct.setStock(Integer.parseInt(this.invField.getText()));
                 newProduct.setMin(Integer.parseInt(this.minField.getText()));
                 newProduct.setMax(Integer.parseInt(this.maxField.getText()));
                 newProduct.setPrice(Double.parseDouble(this.priceField.getText()));
 
-                // add selected parts to associated parts
-                for (Part part : associatedParts) {
-                    if (newProduct.getAllAssociated().contains(part)) {
-                        continue;
-                    } else {
-                        newProduct.addAssociatedPart(part);
-                    }
-                }
+                associatedParts.stream()
+                                .filter(part -> !newProduct.getAllAssociated().contains(part))
+                                .forEach(newProduct::addAssociatedPart);
 
                 Inventory.addProduct(newProduct);
 
@@ -377,6 +330,44 @@ public class addProductController implements Initializable {
         }
         else {
             return false;
+        }
+    }
+
+    /**
+     * iterates through several functions to check if data is valid
+     * I created this to clean up the savePart function
+     * */
+    public boolean dataVerified() {
+        // checking fields and ranges
+        if (emptyFields()) {
+            // empty fields warning
+            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+            emptyFieldsAlert.setTitle("Warning");
+            emptyFieldsAlert.setHeaderText("One of more fields is empty");
+            emptyFieldsAlert.setContentText("All fields are required");
+            emptyFieldsAlert.showAndWait();
+            return false;
+        }
+        else if (impossibleRange()) {
+            // impossible min/max range warning
+            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+            emptyFieldsAlert.setTitle("Warning");
+            emptyFieldsAlert.setHeaderText("Range values are impossible");
+            emptyFieldsAlert.setContentText("Please update min/max values");
+            emptyFieldsAlert.showAndWait();
+            return false;
+        }
+        else if (rangeBreach()) {
+            // range breach warning
+            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+            emptyFieldsAlert.setTitle("Warning");
+            emptyFieldsAlert.setHeaderText("Inventory has fallen outside of min/max range");
+            emptyFieldsAlert.setContentText("Please update values");
+            emptyFieldsAlert.showAndWait();
+            return false;
+        }
+        else {
+            return true;
         }
     }
 

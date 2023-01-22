@@ -13,7 +13,6 @@
  *
  * •   Canceling or exiting this form redirects users to the Main form. ✔
  * */
-
 package InventoryManagementSystem;
 
 import javafx.beans.binding.Bindings;
@@ -82,30 +81,14 @@ public class addPartController {
      * @param min and max are parameters for the randID function
      **/
     public static int randID(int min, int max) {
-        int n = 0;
-        while (true) {
-            try {
-                Random num = new Random();
-                int nextNum = num.nextInt(min, max);
-                ObservableList<Part> partList = Inventory.getAllParts();
-                for (Part part : partList) {
-                    if (part.getId() == nextNum) {
-                        num = new Random();
-                    }
-                    else {
-                        n++;
-                        return nextNum;
-                    }
-                }
-            }
-            catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("ID Generation Error");
-                alert.setContentText("There was an error generating the ID, please try again.");
-                alert.showAndWait();
-            }
+        Random num = new Random();
+        ObservableList<Part> partList = Inventory.getAllParts();
+        int nextNum = num.nextInt(min, max);
+        int finalNum = nextNum;
+        while (partList.stream().anyMatch(product -> product.getId() == finalNum)) {
+            nextNum = num.nextInt(min, max);
         }
+        return nextNum;
     }
 
     /**
@@ -125,7 +108,7 @@ public class addPartController {
      * I cleaned up the code using a lambda expression and the emptyFields function below
      * The function is called as the mouse enters the anchor pane, so essentially as soon as the user opens the form
      * This is what I consider a great method of exception prevention
-     * FUTURE IMPROVEMENT: would be to expand this method of thinking into datatype validation to prevent the user from entering invalid data
+     * FUTURE IMPROVEMENT: would be to expand this method of thinking into datatype validation to prevent the user from being able to submit invalid data
      * */
     @FXML public void fieldSpy() {
         try {
@@ -156,7 +139,7 @@ public class addPartController {
     @FXML public void savePart(ActionEvent event) throws IOException {
         try {
             // generating part ID using generatedID function
-            int partID = randID(0, 100000);
+            int partID = randID(0, 9999);
 
             // use getText() for other fields
             String partName = this.partnameField.getText();
@@ -223,23 +206,13 @@ public class addPartController {
      * FUTURE IMPROVEMENT: make the logic more complex to iterate through each field separately and return an alert for each individual field
      * */
     public boolean emptyFields() {
-        try {
-            // if any fields are empty, function return true
-            // if no fields are empty, functions returns false
-            if (this.partnameField.getText().isEmpty() || this.partinvField.getText().isEmpty() || this.partmaxField.getText().isEmpty() || this.partminField.getText().isEmpty() || this.partpriField.getText().isEmpty() || this.radioresultField.getText().isEmpty()){
+        // if any fields are empty, function return true
+        // if no fields are empty, functions returns false
+        if (this.partnameField.getText().isEmpty() || this.partinvField.getText().isEmpty() || this.partmaxField.getText().isEmpty() || this.partminField.getText().isEmpty() || this.partpriField.getText().isEmpty() || this.radioresultField.getText().isEmpty()){
 
-                return true;
-            }
-            else {
-                return false;
-            }
+            return true;
         }
-        catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Data Entry Error");
-            alert.setHeaderText("There was an error with your input");
-            alert.setContentText("Please try again");
-            alert.showAndWait();
+        else {
             return false;
         }
     }
@@ -249,23 +222,14 @@ public class addPartController {
      * returns boolean values for use in other functions
      * */
     public boolean impossibleRange() {
-        try {
-            int max = Integer.parseInt(this.partmaxField.getText());
-            int min = Integer.parseInt(this.partminField.getText());
-            // return true if the max is less than the min
-            // return false if the max is greater than the min
-            if (max < min) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Data Entry Error");
-            alert.setHeaderText("There was an error with your input");
-            alert.setContentText("Please try again");
-            alert.showAndWait();
+        int max = Integer.parseInt(this.partmaxField.getText());
+        int min = Integer.parseInt(this.partminField.getText());
+        // return true if the max is less than the min
+        // return false if the max is greater than the min
+        if (max < min) {
+            return true;
+        }
+        else {
             return false;
         }
     }
@@ -275,23 +239,14 @@ public class addPartController {
      * returns boolean values for use in other functions
      * */
     public boolean rangeBreach() {
-        try {
-            int stock = Integer.parseInt(this.partinvField.getText());
-            int max = Integer.parseInt(this.partmaxField.getText());
-            int min = Integer.parseInt(this.partminField.getText());
-            // returns true if the stock is less than the min or greater than the max
-            if (stock < min || stock > max) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Data Entry Error");
-            alert.setHeaderText("There was an error with your input");
-            alert.setContentText("Please try again");
-            alert.showAndWait();
+        int stock = Integer.parseInt(this.partinvField.getText());
+        int max = Integer.parseInt(this.partmaxField.getText());
+        int min = Integer.parseInt(this.partminField.getText());
+        // returns true if the stock is less than the min or greater than the max
+        if (stock < min || stock > max) {
+            return true;
+        }
+        else {
             return false;
         }
     }
