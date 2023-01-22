@@ -31,7 +31,6 @@ public class MainMenu extends Application {
         Inventory.addProduct(new Product(1534, "Just Coffee", 9.99, 34, 0, 100));
         Inventory.addProduct(new Product(1535, "Juice & Coffee", 9.99, 34, 0, 100));
 
-
         // creating scene
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("mainMenu.fxml"));
         Scene main = new Scene(fxmlLoader.load(), 1000, 360);

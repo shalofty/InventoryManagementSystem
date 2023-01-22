@@ -29,6 +29,7 @@
 
 package InventoryManagementSystem;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -128,10 +129,17 @@ public class modProductController implements Initializable {
             nullAlert.setContentText("Please select from the table");
         }
         else {
-            this.associatedParts.remove(selectedPart);
-            this.selectedProduct.deleteAssociatedPart(selectedPart);
-            this.updateParts();
-            this.updateProductParts();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation");
+            alert.setHeaderText("You are about to delete a part");
+            alert.setContentText("Are you sure you want to delete this part?");
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.OK) {
+                this.associatedParts.remove(selectedPart);
+                this.selectedProduct.deleteAssociatedPart(selectedPart);
+                this.updateParts();
+                this.updateProductParts();
+            }
         }
     }
 
@@ -203,84 +211,117 @@ public class modProductController implements Initializable {
     }
 
     /**
+     * fieldSpy function I created in order to keep the save button disabled until all the fields are filled
+     * I cleaned up the code using a lambda expression and the emptyFields function below
+     * The function is called as the mouse enters the anchor pane, so essentially as soon as the user opens the form
+     * This is what I consider a great method of exception prevention
+     * FUTURE IMPROVEMENT: would be to expand this method of thinking into datatype validation to prevent the user from entering invalid data
+     * */
+    @FXML public void fieldSpy() {
+        try {
+            saveButton.disableProperty().bind(Bindings.createBooleanBinding(
+                    this::emptyFields,
+                    nameField.textProperty(),
+                    invField.textProperty(),
+                    priceField.textProperty(),
+                    maxField.textProperty(),
+                    minField.textProperty()));
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("FAILED ESPIONAGE");
+            alert.setHeaderText("Something went wrong! Our spy has been caught!");
+            alert.setContentText("In some parts of the world, espionage is a crime. In others, it's a career choice. In this case, it's a bug. Please contact your local developer!");
+            alert.showAndWait();
+        }
+    }
+
+    /**
      * commitProduct function saves the product
      * Implements error checking
      * @param event triggered by saveButton
      */
     @FXML void commitProduct(ActionEvent event) throws IOException {
-
-        if (this.associatedParts.isEmpty()) {
-            // no selected parts warning
-            Alert noPartsAlert = new Alert(Alert.AlertType.WARNING);
-            noPartsAlert.setTitle("Warning");
-            noPartsAlert.setHeaderText("Parts cannot be empty");
-            noPartsAlert.setContentText("Please select from the table");
-            noPartsAlert.showAndWait();
-        }
-
-        if (emptyFields()) {
-            // empty fields warning
-            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
-            emptyFieldsAlert.setTitle("Warning");
-            emptyFieldsAlert.setHeaderText("One of more fields is empty");
-            emptyFieldsAlert.setContentText("All fields are required");
-            emptyFieldsAlert.showAndWait();
-        }
-
-        if (impossibleRange()) {
-            // impossible min/max range warning
-            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
-            emptyFieldsAlert.setTitle("Warning");
-            emptyFieldsAlert.setHeaderText("Range values are impossible");
-            emptyFieldsAlert.setContentText("Please update min/max values");
-            emptyFieldsAlert.showAndWait();
-        }
-
-        if (rangeBreach()) {
-            // range breach warning
-            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
-            emptyFieldsAlert.setTitle("Warning");
-            emptyFieldsAlert.setHeaderText("Inventory has fallen outside of min/max range");
-            emptyFieldsAlert.setContentText("Please update values");
-            emptyFieldsAlert.showAndWait();
-        }
-
-        if (!this.associatedParts.isEmpty() && !emptyFields() && !impossibleRange() && !rangeBreach()) {
-            // product index
-            int index = Inventory.getAllProducts().indexOf(this.selectedProduct);
-
-            // if all conditions are met, save the product
-            int id = this.selectedProduct.getID();
-            String name = this.nameField.getText();
-            int stock = Integer.parseInt(this.invField.getText());
-            int min = Integer.parseInt(this.minField.getText());
-            int max = Integer.parseInt(this.maxField.getText());
-            double price = Double.parseDouble(this.priceField.getText());
-            selectedProduct.setID(id);
-            selectedProduct.setName(name);
-            selectedProduct.setStock(stock);
-            selectedProduct.setMin(min);
-            selectedProduct.setMax(max);
-            selectedProduct.setPrice(price);
-
-            // add selected parts to associated parts
-            for (Part part : associatedParts) {
-                if (selectedProduct.getAllAssociated().contains(part)) {
-                    continue;
-                }
-                else {
-                    selectedProduct.addAssociatedPart(part);
-                }
+        try {
+            if (this.associatedParts.isEmpty()) {
+                // no selected parts warning
+                Alert noPartsAlert = new Alert(Alert.AlertType.WARNING);
+                noPartsAlert.setTitle("Warning");
+                noPartsAlert.setHeaderText("Parts cannot be empty");
+                noPartsAlert.setContentText("Please select from the table");
+                noPartsAlert.showAndWait();
             }
 
-            Inventory.updateProduct(index, selectedProduct);
+            if (emptyFields()) {
+                // empty fields warning
+                Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+                emptyFieldsAlert.setTitle("Warning");
+                emptyFieldsAlert.setHeaderText("One of more fields is empty");
+                emptyFieldsAlert.setContentText("All fields are required");
+                emptyFieldsAlert.showAndWait();
+            }
 
-            // return to main menu
-            Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
-            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            if (impossibleRange()) {
+                // impossible min/max range warning
+                Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+                emptyFieldsAlert.setTitle("Warning");
+                emptyFieldsAlert.setHeaderText("Range values are impossible");
+                emptyFieldsAlert.setContentText("Please update min/max values");
+                emptyFieldsAlert.showAndWait();
+            }
+
+            if (rangeBreach()) {
+                // range breach warning
+                Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+                emptyFieldsAlert.setTitle("Warning");
+                emptyFieldsAlert.setHeaderText("Inventory has fallen outside of min/max range");
+                emptyFieldsAlert.setContentText("Please update values");
+                emptyFieldsAlert.showAndWait();
+            }
+
+            if (!this.associatedParts.isEmpty() && !emptyFields() && !impossibleRange() && !rangeBreach()) {
+                // product index
+                int index = Inventory.getAllProducts().indexOf(this.selectedProduct);
+
+                // if all conditions are met, save the product
+                int id = this.selectedProduct.getID();
+                String name = this.nameField.getText();
+                int stock = Integer.parseInt(this.invField.getText());
+                int min = Integer.parseInt(this.minField.getText());
+                int max = Integer.parseInt(this.maxField.getText());
+                double price = Double.parseDouble(this.priceField.getText());
+                selectedProduct.setID(id);
+                selectedProduct.setName(name);
+                selectedProduct.setStock(stock);
+                selectedProduct.setMin(min);
+                selectedProduct.setMax(max);
+                selectedProduct.setPrice(price);
+
+                // add selected parts to associated parts
+                for (Part part : associatedParts) {
+                    if (selectedProduct.getAllAssociated().contains(part)) {
+                        continue;
+                    }
+                    else {
+                        selectedProduct.addAssociatedPart(part);
+                    }
+                }
+
+                Inventory.updateProduct(index, selectedProduct);
+
+                // return to main menu
+                Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
+                stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            }
+        }
+        catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Something went wrong!");
+            alert.setContentText(e.getMessage() + "\nPlease try again");
+            alert.showAndWait();
         }
     }
 

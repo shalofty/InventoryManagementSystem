@@ -10,6 +10,7 @@
 
 package InventoryManagementSystem;
 
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -46,14 +47,34 @@ public class modPartController implements Initializable {
      * but I noticed it was limited to making 1-2 decisions without being faulty
      * so I separated the radio buttons into their own functions
      * */
-    public void inRadio(ActionEvent event) {
-        this.radioResult.setText("Machine ID");
-        osRadio.setSelected(false);
+    public void ihRadio(ActionEvent event) {
+        if (ihRadio.isSelected()) {
+            this.radioResult.setText("Machine ID");
+            this.radioresultField.setEditable(true);
+            this.radioresultField.setPromptText("");
+            osRadio.setSelected(false);
+        }
+        else {
+            this.radioResult.setText("Select Source");
+            this.radioresultField.setEditable(false);
+            this.radioresultField.clear();
+            this.radioresultField.setPromptText("Disabled");
+        }
     }
 
     public void osRadio(ActionEvent event) {
-        this.radioResult.setText("Outsourced");
-        ihRadio.setSelected(false);
+        if (osRadio.isSelected()) {
+            this.radioResult.setText("Company Name");
+            this.radioresultField.setEditable(true);
+            this.radioresultField.setPromptText("");
+            ihRadio.setSelected(false);
+        }
+        else {
+            this.radioResult.setText("Select Source");
+            this.radioresultField.setEditable(false);
+            this.radioresultField.clear();
+            this.radioresultField.setPromptText("Disabled");
+        }
     }
 
     /**
@@ -100,6 +121,32 @@ public class modPartController implements Initializable {
     }
 
     /**
+     * fieldSpy function I created in order to keep the save button disabled until all the fields are filled
+     * I cleaned up the code using a lambda expression and the emptyFields function below
+     * The function is called as the mouse enters the anchor pane, so essentially as soon as the user opens the form
+     * This is what I consider a great method of exception prevention
+     * FUTURE IMPROVEMENT: would be to expand this method of thinking into datatype validation to prevent the user from entering invalid data
+     * */
+    @FXML public void fieldSpy() {
+        try {
+            saveButton.disableProperty().bind(Bindings.createBooleanBinding(
+                    this::emptyFields,
+                    partnameField.textProperty(),
+                    partinvField.textProperty(),
+                    partpriField.textProperty(),
+                    partmaxField.textProperty(),
+                    partminField.textProperty(),
+                    radioresultField.textProperty()));
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("FAILED ESPIONAGE");
+            alert.setHeaderText("Something went wrong! Our spy has been caught!");
+            alert.setContentText("In some parts of the world, espionage is a crime. In others, it's a career choice. In this case, it's a bug. Please contact your local developer!");
+            alert.showAndWait();
+        }
+    }
+
+    /**
      * @param event triggered when user presses the save button
      * Generates a new partID, and deletes the old entry from the table
      * */
@@ -140,11 +187,11 @@ public class modPartController implements Initializable {
             stage.show();
         }
         catch (NumberFormatException e) {
-            Alert nullAlert = new Alert(Alert.AlertType.WARNING);
-            nullAlert.setTitle("Error");
-            nullAlert.setHeaderText("There was an error with your input");
-            nullAlert.setContentText("Please try again");
-            nullAlert.showAndWait();
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Error");
+            alert.setHeaderText("There was an error saving your part!");
+            alert.setContentText(e.getMessage() + "\nPlease adjust this value and try again.");
+            alert.showAndWait();
         }
 
     }
@@ -239,7 +286,6 @@ public class modPartController implements Initializable {
             noRadioAlert.showAndWait();
             return false;
         }
-
         // checking fields and ranges
         else if (emptyFields()) {
             // empty fields warning
@@ -250,7 +296,6 @@ public class modPartController implements Initializable {
             emptyFieldsAlert.showAndWait();
             return false;
         }
-
         else if (impossibleRange()) {
             // impossible min/max range warning
             Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
@@ -260,7 +305,6 @@ public class modPartController implements Initializable {
             emptyFieldsAlert.showAndWait();
             return false;
         }
-
         else if (rangeBreach()) {
             // range breach warning
             Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
@@ -270,7 +314,6 @@ public class modPartController implements Initializable {
             emptyFieldsAlert.showAndWait();
             return false;
         }
-
         else {
             return true;
         }

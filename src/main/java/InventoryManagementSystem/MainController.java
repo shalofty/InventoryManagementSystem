@@ -162,7 +162,11 @@ public class MainController implements Initializable {
      * */
     public void partDel(ActionEvent event) throws IOException {
         Part selectedPart = viewParts.getSelectionModel().getSelectedItem();
-        Inventory.deletePart(selectedPart);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this part?");
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.OK) {
+            Inventory.deletePart(selectedPart);
+        }
     }
 
     /**
@@ -276,7 +280,23 @@ public class MainController implements Initializable {
      * */
     public void proDel(ActionEvent event) throws IOException {
         Product selectedProduct = viewProducts.getSelectionModel().getSelectedItem();
-        Inventory.deleteProduct(selectedProduct);
+        if (selectedProduct.getAllAssociated().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You are about to delete a product.");
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.OK) {
+                Inventory.deleteProduct(selectedProduct);
+            }
+            else {
+                alert.close();
+            }
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Product has associated parts");
+            alert.setContentText("Please remove all associated parts before deleting");
+            alert.showAndWait();
+        }
     }
 
     /**

@@ -16,6 +16,9 @@
 
 package InventoryManagementSystem;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,7 +31,6 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Random;
-
 
 public class addPartController {
 
@@ -47,14 +49,32 @@ public class addPartController {
      * but I noticed it was limited to making 1-2 decisions without being faulty
      * so I separated the radio buttons into their own functions
      * */
-    public void inRadio(ActionEvent event) {
-        this.radioResult.setText("Machine ID");
-        osRadio.setSelected(false);
+    public void ihRadio(ActionEvent event) {
+        if (ihRadio.isSelected()) {
+            this.radioResult.setText("Machine ID");
+            this.radioresultField.setEditable(true);
+            this.radioresultField.setPromptText("");
+            osRadio.setSelected(false);
+        }
+        else {
+            this.radioResult.setText("Select Source");
+            this.radioresultField.setEditable(false);
+            this.radioresultField.setPromptText("Disabled");
+        }
     }
 
     public void osRadio(ActionEvent event) {
-        this.radioResult.setText("Company Name");
-        ihRadio.setSelected(false);
+        if (osRadio.isSelected()) {
+            this.radioResult.setText("Company Name");
+            this.radioresultField.setEditable(true);
+            this.radioresultField.setPromptText("");
+            ihRadio.setSelected(false);
+        }
+        else {
+            this.radioResult.setText("Select Source");
+            this.radioresultField.setEditable(false);
+            this.radioresultField.setPromptText("Disabled");
+        }
     }
 
     /**
@@ -62,8 +82,30 @@ public class addPartController {
      * @param min and max are parameters for the randID function
      **/
     public static int randID(int min, int max) {
-        Random num = new Random();
-        return num.nextInt((max - min) + 1) + min;
+        int n = 0;
+        while (true) {
+            try {
+                Random num = new Random();
+                int nextNum = num.nextInt(min, max);
+                ObservableList<Part> partList = Inventory.getAllParts();
+                for (Part part : partList) {
+                    if (part.getId() == nextNum) {
+                        num = new Random();
+                    }
+                    else {
+                        n++;
+                        return nextNum;
+                    }
+                }
+            }
+            catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("ID Generation Error");
+                alert.setContentText("There was an error generating the ID, please try again.");
+                alert.showAndWait();
+            }
+        }
     }
 
     /**
@@ -76,6 +118,32 @@ public class addPartController {
         scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+    }
+
+    /**
+     * fieldSpy function I created in order to keep the save button disabled until all the fields are filled
+     * I cleaned up the code using a lambda expression and the emptyFields function below
+     * The function is called as the mouse enters the anchor pane, so essentially as soon as the user opens the form
+     * This is what I consider a great method of exception prevention
+     * FUTURE IMPROVEMENT: would be to expand this method of thinking into datatype validation to prevent the user from entering invalid data
+     * */
+    @FXML public void fieldSpy() {
+        try {
+            saveButton.disableProperty().bind(Bindings.createBooleanBinding(
+                    this::emptyFields,
+                    partnameField.textProperty(),
+                    partinvField.textProperty(),
+                    partpriField.textProperty(),
+                    partmaxField.textProperty(),
+                    partminField.textProperty(),
+                    radioresultField.textProperty()));
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("FAILED ESPIONAGE");
+            alert.setHeaderText("Something went wrong! Our spy has been caught!");
+            alert.setContentText("In some parts of the world, espionage is a crime. In others, it's a career choice. In this case, it's a bug. Please contact your local developer!");
+            alert.showAndWait();
+        }
     }
 
     /**
@@ -122,34 +190,56 @@ public class addPartController {
         catch (NumberFormatException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
-            alert.setHeaderText("There was an error with your input");
-            alert.setContentText("Please try again");
+            alert.setHeaderText("There was an error saving your part!");
+            alert.setContentText(e.getMessage() + "\nPlease adjust this value and try again.");
             alert.showAndWait();
         }
     }
 
     /**
-     * radiocheck function to check if radio buttons are selected
+     * noRadio function to check if radio buttons are selected
      * */
     public boolean noRadio() {
-        if (ihRadio.isSelected() || osRadio.isSelected()) {
+        try {
+            if (ihRadio.isSelected() || osRadio.isSelected()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        catch (NullPointerException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("There was an error with your input");
+            alert.setContentText("Please try again");
+            alert.showAndWait();
             return false;
-        } else {
-            return true;
         }
     }
 
     /**
      * emptyFields functions checks if fields are empty
      * returns boolean values for use in other functions
+     * FUTURE IMPROVEMENT: make the logic more complex to iterate through each field separately and return an alert for each individual field
      * */
     public boolean emptyFields() {
-        // if any fields are empty, function return true
-        // if no fields are empty, functions returns false
-        if (this.partnameField.getText().isEmpty() || this.partinvField.getText().isEmpty() || this.partmaxField.getText().isEmpty() || this.partminField.getText().isEmpty() || this.partpriField.getText().isEmpty()) {
-            return true;
+        try {
+            // if any fields are empty, function return true
+            // if no fields are empty, functions returns false
+            if (this.partnameField.getText().isEmpty() || this.partinvField.getText().isEmpty() || this.partmaxField.getText().isEmpty() || this.partminField.getText().isEmpty() || this.partpriField.getText().isEmpty() || this.radioresultField.getText().isEmpty()){
+
+                return true;
+            }
+            else {
+                return false;
+            }
         }
-        else {
+        catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Data Entry Error");
+            alert.setHeaderText("There was an error with your input");
+            alert.setContentText("Please try again");
+            alert.showAndWait();
             return false;
         }
     }
@@ -159,14 +249,23 @@ public class addPartController {
      * returns boolean values for use in other functions
      * */
     public boolean impossibleRange() {
-        int max = Integer.parseInt(this.partmaxField.getText());
-        int min = Integer.parseInt(this.partminField.getText());
-        // return true if the max is less than the min
-        // return false if the max is greater than the min
-        if (max < min) {
-            return true;
-        }
-        else {
+        try {
+            int max = Integer.parseInt(this.partmaxField.getText());
+            int min = Integer.parseInt(this.partminField.getText());
+            // return true if the max is less than the min
+            // return false if the max is greater than the min
+            if (max < min) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Data Entry Error");
+            alert.setHeaderText("There was an error with your input");
+            alert.setContentText("Please try again");
+            alert.showAndWait();
             return false;
         }
     }
@@ -176,18 +275,31 @@ public class addPartController {
      * returns boolean values for use in other functions
      * */
     public boolean rangeBreach() {
-        int stock = Integer.parseInt(this.partinvField.getText());
-        int max = Integer.parseInt(this.partmaxField.getText());
-        int min = Integer.parseInt(this.partminField.getText());
-        // returns true if the stock is less than the min or greater than the max
-        if (stock < min || stock > max) {
-            return true;
-        }
-        else {
+        try {
+            int stock = Integer.parseInt(this.partinvField.getText());
+            int max = Integer.parseInt(this.partmaxField.getText());
+            int min = Integer.parseInt(this.partminField.getText());
+            // returns true if the stock is less than the min or greater than the max
+            if (stock < min || stock > max) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Data Entry Error");
+            alert.setHeaderText("There was an error with your input");
+            alert.setContentText("Please try again");
+            alert.showAndWait();
             return false;
         }
     }
 
+    /**
+     * iterates through several functions to check if data is valid
+     * I created this to clean up the savePart function
+     * */
     public boolean dataVerified() {
         // checking radio
         if (noRadio()) {
@@ -198,7 +310,6 @@ public class addPartController {
             noRadioAlert.showAndWait();
             return false;
         }
-
         // checking fields and ranges
         else if (emptyFields()) {
             // empty fields warning
@@ -209,7 +320,6 @@ public class addPartController {
             emptyFieldsAlert.showAndWait();
             return false;
         }
-
         else if (impossibleRange()) {
             // impossible min/max range warning
             Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
@@ -219,7 +329,6 @@ public class addPartController {
             emptyFieldsAlert.showAndWait();
             return false;
         }
-
         else if (rangeBreach()) {
             // range breach warning
             Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
@@ -229,7 +338,6 @@ public class addPartController {
             emptyFieldsAlert.showAndWait();
             return false;
         }
-
         else {
             return true;
         }
