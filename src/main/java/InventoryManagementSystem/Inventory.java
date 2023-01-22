@@ -4,13 +4,13 @@
  * C.  Create classes with data and logic that map to the UML class diagram and include the supplied Part class provided in the attached “Part.java.”
  * Do not alter the provided class. Include all the classes and members as shown in the UML diagram. Your code should demonstrate the following:
  *
- * •   inheritance
+ * •   inheritance ✔
  *
- * •   abstract and concrete classes
+ * •   abstract and concrete classes ✔
  *
- * •   instance and static variables
+ * •   instance and static variables ✔
  *
- * •   instance and static methods
+ * •   instance and static methods ✔
  * */
 
 package InventoryManagementSystem;
@@ -26,6 +26,7 @@ public class Inventory {
 
     /**
      * addPart function to add newPart to Inventory
+     * @param newPart is the new part to be added to the Inventory
      * */
     public static void addPart(Part newPart) {
         allParts.add(newPart);
@@ -33,6 +34,7 @@ public class Inventory {
 
     /**
      * addProduct function to add newProduct to Inventory
+     * @param newProduct is the new product to be added to the Inventory
      * */
     public static void addProduct(Product newProduct) {
         allProducts.add(newProduct);
@@ -47,6 +49,7 @@ public class Inventory {
 
     /**
      * lookupPart function via partID
+     * @param partID is the parameter for the lookupPart function
      * */
     public static Part lookupPartbyID(int partID) {
         // Pokemon number 132 is Ditto, it can freely recombine its own structure to transform to other forms.
@@ -61,6 +64,7 @@ public class Inventory {
 
     /**
      * lookupProduct function via productID
+     * @param productID is the parameter for the lookupProduct function
      * */
     public static Product lookupProductbyID(int productID) {
         Product ditto = null;
@@ -74,6 +78,7 @@ public class Inventory {
 
     /**
      * lookupPart function via partName
+     * @param partName is the parameter for the lookupPart function
      * */
     public static ObservableList<Part> lookupPart(String partName) {
         ObservableList<Part> dittoPart = FXCollections.observableArrayList();
@@ -90,6 +95,7 @@ public class Inventory {
 
     /**
      * lookupProduct function via productName
+     * @param productName is the parameter for the lookupProduct function
      * */
     public static ObservableList<Product> lookupProduct(String productName) {
         ObservableList<Product> dittoProduct = FXCollections.observableArrayList();
@@ -106,6 +112,8 @@ public class Inventory {
 
     /**
      * updatePart function using set()
+     * @param index is the parameter for the updatePart function
+     * @param selectedPart is the parameter for the updatePart function
      * */
     public static void updatePart(int index, Part selectedPart) {
         allParts.set(index, selectedPart);
@@ -113,6 +121,8 @@ public class Inventory {
 
     /**
      * updateProduct function using set()
+     * @param index is the parameter for the updateProduct function
+     * @param newProduct is the parameter for the updateProduct function
      * */
     public static void updateProduct(int index, Product selectedProduct) {
         allProducts.set(index, selectedProduct);
@@ -120,6 +130,7 @@ public class Inventory {
 
     /**
      * deletePart function to remove selectedPart using remove()
+     * @param selectedPart is the parameter for the deletePart function
      * */
     public static boolean deletePart(Part selectedPart) {
         return allParts.remove(selectedPart);
@@ -127,6 +138,7 @@ public class Inventory {
 
     /**
      * deleteProduct function to remove selectedProduct using remove()
+     * @param selectedProduct is the parameter for the deleteProduct function
      * */
     public static boolean deleteProduct(Product selectedProduct) {
         return allProducts.remove(selectedProduct);

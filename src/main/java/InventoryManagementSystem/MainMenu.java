@@ -12,7 +12,6 @@ package InventoryManagementSystem;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -28,7 +27,10 @@ public class MainMenu extends Application {
         // sample data
         Inventory.addPart(new InHouse(1564, "Coffee", 1.99, 50, 0, 100, 19));
         Inventory.addPart(new Outsourced(24775, "Juice", 3.99, 100, 0, 1000, "Greek Grapes"));
-        Inventory.addProduct(new Product(1533, "6 Pack of Juice", 9.99, 34, 0, 100));
+        Inventory.addProduct(new Product(1533, "Just Juice", 9.99, 34, 0, 100));
+        Inventory.addProduct(new Product(1534, "Just Coffee", 9.99, 34, 0, 100));
+        Inventory.addProduct(new Product(1535, "Juice & Coffee", 9.99, 34, 0, 100));
+
 
         // creating scene
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("mainMenu.fxml"));

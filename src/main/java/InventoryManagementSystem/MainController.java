@@ -91,7 +91,6 @@ public class MainController implements Initializable {
 
     private static Stage stage;
     private static Scene scene;
-    private static Parent root;
 
 
     /**
@@ -167,7 +166,7 @@ public class MainController implements Initializable {
     }
 
     /**
-     * partSeachBox function
+     * partSeacrh function searches for parts in inventory
      * uses the lookupPart function defined in the Inventory class
      * @param event triggers when user searches in search bar
      * FUTURE IMPROVEMENT: could be cleaner by returning a more relevant datatype from the lookupPart function in the Inventory class or creating a new function altogether
@@ -206,7 +205,7 @@ public class MainController implements Initializable {
 
 
     /**
-     * prductSearchBox function
+     * prductSearch function
      * @param event triggers when user searches in search bar
      * */
     public void productSearch(ActionEvent event) throws IOException {
@@ -264,7 +263,6 @@ public class MainController implements Initializable {
 
         modProductController controller = loader.getController();
         controller.productAttributes(selectedProduct);
-
 
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(loader.getRoot());

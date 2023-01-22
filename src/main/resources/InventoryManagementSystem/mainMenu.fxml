@@ -30,6 +30,11 @@
             <Button fx:id="partdelButton" disable="true" layoutX="310.0" layoutY="240.0" mnemonicParsing="false" onAction="#partDel" text="Delete" />
             <Button fx:id="partmodButton" disable="true" layoutX="250.0" layoutY="240.0" mnemonicParsing="false" onAction="#partMod" text="Modify" />
             <Button fx:id="partaddButton" layoutX="205.0" layoutY="240.0" mnemonicParsing="false" onAction="#partAdd" text="Add" />
+            <Label layoutX="14.0" layoutY="13.0" prefHeight="27.0" prefWidth="50.0" text="Parts">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
       <Pane layoutX="539.0" layoutY="41.0" prefHeight="271.0" prefWidth="375.0" style="-fx-border-color: black; -fx-border-width: 1; -fx-border-style: solid;">
@@ -42,10 +47,15 @@
                   <TableColumn fx:id="propriceColumn" prefWidth="66.0" text="Price" />
                </columns>
             </TableView>
-            <TextField fx:id="productSearchBox" layoutX="185.0" layoutY="14.0" onAction="#productSearch" prefHeight="25.0" prefWidth="178.0" promptText="Search by Product ID or Name" />
+            <TextField fx:id="productSearchBox" layoutX="182.0" layoutY="14.0" onAction="#productSearch" prefHeight="25.0" prefWidth="178.0" promptText="Search by Product ID or Name" />
             <Button fx:id="prodelButton" disable="true" layoutX="310.0" layoutY="240.0" mnemonicParsing="false" onAction="#proDel" text="Delete" />
             <Button fx:id="promodButton" disable="true" layoutX="250.0" layoutY="240.0" mnemonicParsing="false" onAction="#proMod" text="Modify" />
             <Button fx:id="proaddButton" layoutX="205.0" layoutY="240.0" mnemonicParsing="false" onAction="#proAdd" text="Add" />
+            <Label layoutX="13.0" layoutY="13.0" prefHeight="27.0" prefWidth="85.0" text="Products">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
       <Button fx:id="mainexitButton" layoutX="861.0" layoutY="327.0" mnemonicParsing="false" onAction="#closeApp" prefHeight="25.0" prefWidth="53.0" text="Exit" />

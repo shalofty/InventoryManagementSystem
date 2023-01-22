@@ -3,7 +3,7 @@
  *
  * •   The text fields populate with the data from the chosen product, and the bottom TableView populates with the associated parts. ✔
  *
- * •   The user can search for parts (top table) by ID or name (partial or full name). If the part or parts are found, the application highlights a single part or filters multiple parts.
+ * •   The user can search for parts (top table) by ID or name (partial or full name). If the part or parts are found, the application highlights a single part or filters multiple parts. ✔
  *     If the part is not found, the application displays an error message in the UI or a dialog box.
  *
  * •   If the search text field is set to empty, the table should be repopulated with all available parts. ✔
@@ -61,8 +61,7 @@ public class modProductController implements Initializable {
     public ObservableList<Part> associatedParts = FXCollections.observableArrayList();
     private ObservableList<Part> originalParts = FXCollections.observableArrayList();
 
-    private int productID, productMin, productMax, productInv;
-    private Product selectedProduct, modifiedProduct;
+    private Product selectedProduct;
 
     private static Stage stage;
     private static Scene scene;

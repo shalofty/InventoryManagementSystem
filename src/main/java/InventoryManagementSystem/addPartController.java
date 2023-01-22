@@ -16,9 +16,6 @@
 
 package InventoryManagementSystem;
 
-import InventoryManagementSystem.InHouse;
-import InventoryManagementSystem.Inventory;
-import InventoryManagementSystem.Outsourced;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,12 +23,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
-
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
 
 import java.io.IOException;
 import java.util.Random;
@@ -93,32 +86,152 @@ public class addPartController {
      * must return to previous mainMenu
      * */
     @FXML public void savePart(ActionEvent event) throws IOException {
+        try {
+            // generating part ID using generatedID function
+            int partID = randID(0, 100000);
 
-        // generating part ID using generatedID function
-        int partID = randID(0, 100000);
+            // use getText() for other fields
+            String partName = this.partnameField.getText();
+            int partInv = Integer.parseInt(this.partinvField.getText());
+            int partMin = Integer.parseInt(this.partminField.getText());
+            int partMax = Integer.parseInt(this.partmaxField.getText());
+            double partPrice = Double.parseDouble(this.partpriField.getText());
 
-        // use getText() for other fields
-        String partName = partnameField.getText();
-        int partInv = Integer.parseInt(partinvField.getText());
-        int partMin = Integer.parseInt(partminField.getText());
-        int partMax = Integer.parseInt(partmaxField.getText());
-        double partPrice = Double.parseDouble(partpriField.getText());
+            // using if/else, creating new objects from InHouse.java or Outsourced.java depending on radio selection
+            if (ihRadio.isSelected()) {
+                int machineID = Integer.parseInt(radioresultField.getText());
+                InHouse part = new InHouse(partID, partName, partPrice, partInv, partMin, partMax, machineID);
+                if (dataVerified()) {
+                    Inventory.addPart(part);
+                }
+            } else {
+                String companyName = radioresultField.getText();
+                Outsourced part = new Outsourced(partID, partName, partPrice, partInv, partMin, partMax, companyName);
+                if (dataVerified()) {
+                    Inventory.addPart(part);
+                }
+            }
 
-        // using if/else, creating new objects from InHouse.java or Outsourced.java depending on radio selection
-        if (ihRadio.isSelected()) {
-            int machineID = Integer.parseInt(radioresultField.getText());
-            InHouse part = new InHouse(partID, partName, partPrice, partInv, partMin, partMax, machineID);
-            Inventory.addPart(part);
-        } else {
-            String companyName = radioresultField.getText();
-            Outsourced part = new Outsourced(partID, partName, partPrice, partInv, partMin, partMax, companyName);
-            Inventory.addPart(part);
+            // returning to mainMenu
+            Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
+            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         }
-        // returning to mainMenu
-        Parent root = FXMLLoader.load(getClass().getResource("mainMenu.fxml"));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("There was an error with your input");
+            alert.setContentText("Please try again");
+            alert.showAndWait();
+        }
+    }
+
+    /**
+     * radiocheck function to check if radio buttons are selected
+     * */
+    public boolean noRadio() {
+        if (ihRadio.isSelected() || osRadio.isSelected()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * emptyFields functions checks if fields are empty
+     * returns boolean values for use in other functions
+     * */
+    public boolean emptyFields() {
+        // if any fields are empty, function return true
+        // if no fields are empty, functions returns false
+        if (this.partnameField.getText().isEmpty() || this.partinvField.getText().isEmpty() || this.partmaxField.getText().isEmpty() || this.partminField.getText().isEmpty() || this.partpriField.getText().isEmpty()) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * impossibleRange function checks if min/max values are possible
+     * returns boolean values for use in other functions
+     * */
+    public boolean impossibleRange() {
+        int max = Integer.parseInt(this.partmaxField.getText());
+        int min = Integer.parseInt(this.partminField.getText());
+        // return true if the max is less than the min
+        // return false if the max is greater than the min
+        if (max < min) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * rangeBreach function checks if inventory is within min/max range
+     * returns boolean values for use in other functions
+     * */
+    public boolean rangeBreach() {
+        int stock = Integer.parseInt(this.partinvField.getText());
+        int max = Integer.parseInt(this.partmaxField.getText());
+        int min = Integer.parseInt(this.partminField.getText());
+        // returns true if the stock is less than the min or greater than the max
+        if (stock < min || stock > max) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public boolean dataVerified() {
+        // checking radio
+        if (noRadio()) {
+            Alert noRadioAlert = new Alert(Alert.AlertType.WARNING);
+            noRadioAlert.setTitle("Warning");
+            noRadioAlert.setHeaderText("No Radio Button Selected");
+            noRadioAlert.setContentText("Please select a radio button");
+            noRadioAlert.showAndWait();
+            return false;
+        }
+
+        // checking fields and ranges
+        else if (emptyFields()) {
+            // empty fields warning
+            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+            emptyFieldsAlert.setTitle("Warning");
+            emptyFieldsAlert.setHeaderText("One of more fields is empty");
+            emptyFieldsAlert.setContentText("All fields are required");
+            emptyFieldsAlert.showAndWait();
+            return false;
+        }
+
+        else if (impossibleRange()) {
+            // impossible min/max range warning
+            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+            emptyFieldsAlert.setTitle("Warning");
+            emptyFieldsAlert.setHeaderText("Range values are impossible");
+            emptyFieldsAlert.setContentText("Please update min/max values");
+            emptyFieldsAlert.showAndWait();
+            return false;
+        }
+
+        else if (rangeBreach()) {
+            // range breach warning
+            Alert emptyFieldsAlert = new Alert(Alert.AlertType.WARNING);
+            emptyFieldsAlert.setTitle("Warning");
+            emptyFieldsAlert.setHeaderText("Inventory has fallen outside of min/max range");
+            emptyFieldsAlert.setContentText("Please update values");
+            emptyFieldsAlert.showAndWait();
+            return false;
+        }
+
+        else {
+            return true;
+        }
     }
 }

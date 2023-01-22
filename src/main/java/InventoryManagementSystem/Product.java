@@ -4,13 +4,13 @@
  * C.  Create classes with data and logic that map to the UML class diagram and include the supplied Part class provided in the attached “Part.java.”
  * Do not alter the provided class. Include all the classes and members as shown in the UML diagram. Your code should demonstrate the following:
  *
- * •   inheritance
+ * •   inheritance ✔
  *
- * •   abstract and concrete classes
+ * •   abstract and concrete classes ✔
  *
- * •   instance and static variables
+ * •   instance and static variables ✔
  *
- * •   instance and static methods
+ * •   instance and static methods ✔
  * */
 
 package InventoryManagementSystem;
@@ -20,7 +20,7 @@ import javafx.collections.ObservableList;
 
 public class Product {
     // per the UML class diagram requirements
-    // modeled this class after the part class included with the project
+    // modeled this class after the part class included with the project while following the UML class diagram for specifications
 
     private final ObservableList<Part> associatedParts;
     private int ID, stock, min, max;
