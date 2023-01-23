@@ -10,6 +10,6 @@ save button if there fields are filled. Provides a layer of exception prevention
 
 My train of thought for this project was pointed towards making it as difficult as possible for the user to submit incorrect data, or trigger any type of exception. You'll find the modify and delete buttons won't enable unless pointed toward an object. This prevents the user from throwing a null point exception by pressing the buttons without anything selected.
 
-The project guidelines itself was focused more on exception handling, which I also included.
+The project guidelines were focused more on exception handling, which I also included.
 
 This project passed in the first round of examination.
